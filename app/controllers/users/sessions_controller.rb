@@ -8,7 +8,10 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_with(current_user, _opts = {})
     render json: {
-      user: current_user.attributes.slice('name', 'email')
+      user: {
+        **current_user.attributes.slice('name', 'email'),
+        token: current_token
+      }
     }, status: :ok
   end
 
@@ -28,5 +31,9 @@ class Users::SessionsController < Devise::SessionsController
         message: "Couldn't find an active session."
       }, status: :unauthorized
     end
+  end
+
+  def current_token
+    request.env['warden-jwt_auth.token']
   end
 end

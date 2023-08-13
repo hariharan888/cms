@@ -9,4 +9,8 @@ Rails.application.routes.draw do
                        sessions: 'users/sessions',
                        registrations: 'users/registrations'
                      }
+
+  get 'me', action: :my_profile, controller: 'profiles'
+  
+  resources :stocks
 end

@@ -7,7 +7,7 @@ class CreateStockCodes < ActiveRecord::Migration[7.0]
       t.timestamps
     end
 
-    add_index :stock_codes, [:stock_id, :code_type], unique: true
-    add_index :stock_codes, [:code_type, :value], unique: true
+    add_index :stock_codes, %i[stock_id code_type], unique: true
+    add_index :stock_codes, %i[code_type value], unique: true
   end
 end

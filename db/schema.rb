@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_10_164459) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -23,6 +23,38 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_10_164459) do
     t.index ["code_type", "value"], name: "index_stock_codes_on_code_type_and_value", unique: true
     t.index ["stock_id", "code_type"], name: "index_stock_codes_on_stock_id_and_code_type", unique: true
     t.index ["stock_id"], name: "index_stock_codes_on_stock_id"
+  end
+
+  create_table "stock_group_junctions", force: :cascade do |t|
+    t.bigint "stock_id", null: false
+    t.bigint "stock_group_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stock_group_id"], name: "index_stock_group_junctions_on_stock_group_id"
+    t.index ["stock_id", "stock_group_id"], name: "index_stock_group_junctions_on_stock_id_and_stock_group_id", unique: true
+    t.index ["stock_id"], name: "index_stock_group_junctions_on_stock_id"
+  end
+
+  create_table "stock_groups", force: :cascade do |t|
+    t.string "name"
+    t.integer "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "stock_values", force: :cascade do |t|
+    t.bigint "stock_id", null: false
+    t.float "open", null: false
+    t.float "close", null: false
+    t.float "high", null: false
+    t.float "low", null: false
+    t.integer "volume", null: false
+    t.datetime "time", null: false
+    t.integer "resolution", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stock_id", "time", "resolution"], name: "index_stock_values_on_stock_id_and_time_and_resolution", unique: true
+    t.index ["stock_id"], name: "index_stock_values_on_stock_id"
   end
 
   create_table "stocks", force: :cascade do |t|
@@ -47,4 +79,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_10_164459) do
   end
 
   add_foreign_key "stock_codes", "stocks"
+  add_foreign_key "stock_group_junctions", "stock_groups"
+  add_foreign_key "stock_group_junctions", "stocks"
+  add_foreign_key "stock_values", "stocks"
 end

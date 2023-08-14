@@ -8,10 +8,8 @@ class Users::SessionsController < Devise::SessionsController
 
   def respond_with(current_user, _opts = {})
     render json: {
-      user: {
-        **current_user.attributes.slice('name', 'email'),
-        token: current_token
-      }
+      user: current_user.attributes.slice('name', 'email'),
+      token: current_token
     }, status: :ok
   end
 

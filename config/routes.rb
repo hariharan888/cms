@@ -11,6 +11,6 @@ Rails.application.routes.draw do
                      }
 
   get 'me', action: :my_profile, controller: 'profiles'
-  
+
   resources :stocks
 end

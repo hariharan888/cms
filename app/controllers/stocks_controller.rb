@@ -1,5 +1,5 @@
 class StocksController < ApplicationController
   def index
-    @stocks = Stock.all.limit(10)
+    @pagy, @records = pagy(Stock.all)
   end
 end

@@ -25,4 +25,18 @@ class Stock < ApplicationRecord
     code.value = value
     code.save!
   end
+
+  class << self
+    def ransackable_attributes(_auth_object = nil)
+      %w[name]
+    end
+
+    def ransackable_associations(_auth_object = nil)
+      []
+    end
+
+    def ransackable_scopes(_auth_object = nil)
+      %i[]
+    end
+  end
 end

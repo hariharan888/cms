@@ -2,17 +2,6 @@ class ApplicationController < ActionController::API
   include Pagy::Backend
 
   rescue_from StandardError, with: :handle_error
-  rescue_from AbstractController::ActionNotFound, with: -> { respond_with_error 'Resource not found', 404 }
-  rescue_from ActiveRecord::RecordNotFound, with: -> { respond_with_error 'Resource not found', 404 }
-  rescue_from(ActiveRecord::RecordInvalid) do |pme|
-    respond_with_error pme.to_s, 400
-  end
-  rescue_from(ActionController::ParameterMissing) do |pme|
-    respond_with_error pme.to_s, 400
-  end
-  rescue_from(ActionController::BadRequest) do |pme|
-    respond_with_error pme.to_s, 400
-  end
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_user!
@@ -24,7 +13,11 @@ class ApplicationController < ActionController::API
   end
 
   def page
-    params[:p]&.to_i || Pagy::DEFAULT[:page]
+    page_value = params[:p]&.to_i || Pagy::DEFAULT[:page]
+
+    raise ActionController::BadRequest.new('Invalid page number') if page_value.zero?
+
+    page_value
   end
 
   def per_page
@@ -46,17 +39,20 @@ class ApplicationController < ActionController::API
   private
 
   def handle_error(error, error_message = 'Unexpected internal server error', error_code = 500)
-    log_error(error)
-    msg = { error_ts: Time.now.to_i,
-            error_message:,
-            error_code: }
-
-    # send_mail_to_developer(e, err_msg, msg)
-    render json: msg, status: error_code
+    case error
+    when AbstractController::ActionNotFound, ActiveRecord::RecordNotFound
+      return respond_with_error 'Resource not found', 404
+    when ActiveRecord::RecordInvalid, ActionController::ParameterMissing, ActionController::BadRequest
+      return respond_with_error error.message, 400
+    else
+      log_error(error)
+      # send_mail_to_developer(e, err_msg, msg)
+      return respond_with_error error_message, error_code
+    end
   end
 
   def respond_with_error(error_message = 'An error occured', error_code = 400)
-    msg = { error_message:, error_code: }
+    msg = { error_ts: Time.now.to_i, error_message:, error_code: }
     render json: msg, status: error_code
   end
 

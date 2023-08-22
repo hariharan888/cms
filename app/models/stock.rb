@@ -1,8 +1,14 @@
 class Stock < ApplicationRecord
+  include Discard::Model
+
   has_many :stock_codes
   has_many :stock_group_junctions
   has_many :stock_groups, through: :stock_group_junctions
   has_many :stock_values
+
+  def isin
+    stock_codes.isin.first&.value
+  end
 
   def nse_code
     stock_codes.nse.first&.value

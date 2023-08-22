@@ -12,5 +12,7 @@ Rails.application.routes.draw do
 
   get 'me', action: :my_profile, controller: 'profiles'
 
-  resources :stocks
+  resources :stocks do
+    post :bulk_delete, on: :collection
+  end
 end

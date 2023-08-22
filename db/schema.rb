@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_20_115626) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,7 +20,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
     t.bigint "stock_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
     t.index ["code_type", "value"], name: "index_stock_codes_on_code_type_and_value", unique: true
+    t.index ["discarded_at"], name: "index_stock_codes_on_discarded_at"
     t.index ["stock_id", "code_type"], name: "index_stock_codes_on_stock_id_and_code_type", unique: true
     t.index ["stock_id"], name: "index_stock_codes_on_stock_id"
   end
@@ -30,6 +32,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
     t.bigint "stock_group_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_stock_group_junctions_on_discarded_at"
     t.index ["stock_group_id"], name: "index_stock_group_junctions_on_stock_group_id"
     t.index ["stock_id", "stock_group_id"], name: "index_stock_group_junctions_on_stock_id_and_stock_group_id", unique: true
     t.index ["stock_id"], name: "index_stock_group_junctions_on_stock_id"
@@ -40,6 +44,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
     t.integer "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_stock_groups_on_discarded_at"
   end
 
   create_table "stock_values", force: :cascade do |t|
@@ -53,6 +59,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
     t.integer "resolution", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_stock_values_on_discarded_at"
     t.index ["stock_id", "time", "resolution"], name: "index_stock_values_on_stock_id_and_time_and_resolution", unique: true
     t.index ["stock_id"], name: "index_stock_values_on_stock_id"
   end
@@ -61,6 +69,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_stocks_on_discarded_at"
   end
 
   create_table "users", force: :cascade do |t|
@@ -73,6 +83,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_13_045158) do
     t.datetime "updated_at", null: false
     t.string "name"
     t.string "jti", null: false
+    t.datetime "discarded_at"
+    t.index ["discarded_at"], name: "index_users_on_discarded_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
